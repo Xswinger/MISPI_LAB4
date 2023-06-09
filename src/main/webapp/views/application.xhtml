@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<f:view>
+    <h:head>
+        <title>ЛР3. Страница приложения.</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"/>
+        <h:outputStylesheet library="styles" name="application.css"/>
+    </h:head>
+</f:view>
+<body>
+<f:view>
+    <table id="layoutTable">
+        <tr id="header">  <!-- Первая строка - шапка -->
+            <td colspan="3">
+                <h:outputLabel id="headerText" value="Tuchkov Maxim Ruslanovich. Group P32121. Variant 12149"/>
+            </td>
+        </tr>
+        <tr style="height: 20%">  <!-- Вторая строка - график и кнопка проверки -->
+            <td colspan="3">
+                <div>
+                    <canvas id="graphic" width="300px" height="300px">
+                    </canvas>
+                    <h:outputScript library="js" name="validator.js"/>
+                    <h:outputScript library="js" name="graphic.js"/>
+                    <h:outputScript library="js" name="listening.js"/>
+                </div>
+            </td>
+            <td>
+
+            </td>
+        </tr>
+        <h:form id="mainForm">
+            <tr id="choosing">  <!-- Третья строка - выбор координат -->
+                <td>
+                    <div class="input-label">x coordinate:</div>
+                    <div id="xSet">
+                        <div><h:commandButton styleClass="x" value="-3"/></div>
+                        <div><h:commandButton styleClass="x" value="-2"/></div>
+                        <div><h:commandButton styleClass="x" value="-1"/></div>
+                        <div><h:commandButton styleClass="x" value="0"/></div>
+                        <div><h:commandButton styleClass="x" value="1"/></div>
+                        <div><h:commandButton styleClass="x" value="2"/></div>
+                        <div><h:commandButton styleClass="x" value="3"/></div>
+                        <div><h:commandButton styleClass="x" value="4"/></div>
+                        <div><h:commandButton styleClass="x" value="5"/></div>
+                        <h:inputText type="hidden" class="hidden_x" style="display: none" name="x" value = "#{appBean.hit.x}">
+                            <f:validateRequired/>
+                            <f:validateDoubleRange minimum="-3" maximum="5"/>
+                        </h:inputText>
+                    </div>
+                    <div id="xDivST">
+                        <!-- StackTrace for x coordinate -->
+                    </div>
+                </td>
+                <td>
+                    <div class="input-label">y coordinate:</div>
+                    <h:inputText id="y" style="color: darkgray" value="#{appBean.hit.yLine}" required="true"
+                                 validator="yValidator"
+                                 requiredMessage="double: [-3;3]"
+                                 converterMessage="double: [-3;3]"
+                                 validatorMessage="double: [-3;3]">
+                        <f:validator validatorId="yValidator"/>
+                        <f:ajax execute="@this" render="yStackTrace"/>
+                    </h:inputText>
+                    <div id="yDivST">
+                        <h:message id="yStackTrace" for="y"/>
+                    </div>
+                </td>
+                <td>
+                    <div class="input-label">radius:</div>
+                    <h:inputText id="r" style="color: darkgray" value="#{appBean.hit.r}" required="true"
+                                 validator="rValidator"
+                                 requiredMessage="int: [2;5]"
+                                 validatorMessage="int: [2;5]"
+                                 converterMessage="int: [2;5]">
+                        <f:validator validatorId="rValidator"/>
+                        <f:ajax execute="@this" onevent="rChanged()" render="rStackTrace"/>
+                    </h:inputText>
+                    <div id="rDivST">
+                        <h:message id="rStackTrace" for="r"/>
+                    </div>
+                </td>
+            </tr>
+            <tr> <!-- Четвертая строка - кнопки очистки и проверки -->
+                <td colspan="3">
+                    <div>
+                        <h:commandButton id="formButton" action="#{appBean.add}" styleClass="checkButton"
+                                         value="Check data">
+                            <f:ajax execute="mainForm" render="results" onevent="drawLastDot"/>
+                        </h:commandButton>
+                    </div>
+                </td>
+            </tr>
+        </h:form>
+        <tr>
+            <td colspan="3">
+                <h:form id = "clearingForm">
+                    <h:commandButton id = "clearingButton" action = "#{appBean.clear}" styleClass="checkButton"
+                                     value="Clear table">
+                        <f:ajax execute = "clearingForm" render = "results" onevent="clearCanvas"/>
+                    </h:commandButton>
+                </h:form>
+            </td>
+        </tr>
+        <tr>  <!-- Пятая строка - таблица -->
+            <td colspan="3">
+                <div id="resultTable">
+                    <h:panelGroup id="results">
+
+                        <h:dataTable id="dataTable" value="#{appBean.hitList}" var="result">
+                            <h:column>
+                                <f:facet name="header">x</f:facet>
+                                <h:outputText class="x_column" value="#{result.x}"/>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">y</f:facet>
+                                <h:outputText class="y_column" value="#{result.y}"/>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">r</f:facet>
+                                <h:outputText class="r_column" value="#{result.r}"/>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">succes</f:facet>
+                                <h:outputText class="result_column" value="#{result.successLine}"/>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">exec time</f:facet>
+                                #{result.exTime}
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">cur time</f:facet>
+                                #{result.date}
+                            </h:column>
+
+                        </h:dataTable>
+                    </h:panelGroup>
+                </div>
+            </td>
+        </tr>
+        <tr id="ret">  <!-- Пятая строка - кнопка возврата -->
+            <td colspan="3">
+                <h:link class="redirectionLink" value="Go back to the start page" outcome="startPage"/>
+            </td>
+        </tr>
+    </table>
+    <h:form id = "hidden_form" style="display: none">
+        <h:inputHidden id = "graphic_x_hidden" value = "#{appBean.hit.x}"/>
+        <h:inputHidden id = "graphic_y_hidden" value = "#{appBean.hit.y}"/>
+        <h:inputHidden id = "graphic_r_hidden" value = "#{appBean.hit.r}"/>
+        <h:commandButton id = "graphic_button_hidden" action = "#{appBean.add}">
+            <f:ajax execute = "hidden_form" render = "results" onevent="drawLastDot()"/>
+        </h:commandButton>
+    </h:form>
+</f:view>
+</body>
+</html>

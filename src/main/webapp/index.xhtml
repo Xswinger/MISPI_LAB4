@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<f:view>
+    <h:head>
+        <title>ЛР3. Стартовая страница.</title>
+        <h:outputStylesheet library="styles" name="index.css"/>
+    </h:head>
+    <h:body>
+
+        <div id="header">
+
+            <h:outputLabel id="headerText" value="Tuchkov Maxim Ruslanovich. Group P32121. Variant 12149"/>
+
+        </div>
+
+        <div id="outer">
+
+            <div id="innerMid">
+
+                <div id="clock"/>
+
+                <h:outputLabel id="mainText" value="Hello, Nadia, let's play a tablet?"/>
+
+                <br/>
+
+                    <h:link class="redirectionLink" value="Go to the application page" outcome="applicationPage"/>
+
+            </div>
+
+        </div>
+
+
+        <h:outputScript library="js" name="clocks.js"/>
+    </h:body>
+</f:view>
+</html>

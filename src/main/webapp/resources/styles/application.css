@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css?family=Orbitron');
+
+body {
+    font-family: 'Orbitron', sans-serif;
+    background-color: #121212;
+}
+
+#layoutTable {
+    width: 100%;
+}
+
+td {
+    padding: 18.5px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+tr {
+    height: 20%;
+}
+
+#layoutTable {
+    color: #66ff99;
+}
+
+#headerText {
+    font-size: 45px;
+    height: 30px;
+}
+
+.redirectionLink, .checkButton {
+    font-family: 'Orbitron', sans-serif;
+    margin: auto;
+    background-color: aliceblue;
+    color: crimson;
+    box-shadow: 3px 3px 10px 2px #66ff99;
+    border: 2px solid #66ff99;
+    border-radius: 0.75em;
+    font-size: 15px;
+    padding: 10px 30px;
+}
+
+.redirectionLink:active, .checkButton:active {
+    box-shadow: none;
+}
+
+#xSet {
+    display: flex;
+    justify-content: center;
+}
+
+#xSet > div {
+    margin-left: 3px;
+    margin-right: 3px;
+    width: 25px;
+}
+
+#xSet > div > input {
+    width: 100%;
+}
+
+.input-label {
+    margin-bottom: 10px;
+}
+
+#yDivST, #rDivST, #xDivST {
+    align-self: center;
+    height: 25px;
+    color: crimson;
+    display: block;
+}
+
+#resultTable {
+    display: flex;
+    justify-content: center;
+}
+
+#dataTable {
+    border: aliceblue;
+}
+
+#dataTable td {
+    width: 240px;
+}
