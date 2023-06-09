@@ -24,7 +24,9 @@ public class HitService implements Serializable, HitDao {
     public List<Hit> getAll() {
         Session currentSession = manager.getCurrentSession();
         currentSession.beginTransaction();
-        return currentSession.createQuery( "FROM Hit ").list();
+        List<Hit> hits =  currentSession.createQuery( "FROM Hit ").list();
+        currentSession.getTransaction().commit();
+        return hits;
     }
 
     @Override
