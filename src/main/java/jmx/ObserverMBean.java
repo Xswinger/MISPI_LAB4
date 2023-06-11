@@ -2,10 +2,10 @@ package jmx;
 
 public interface ObserverMBean {
 
-    public void setMessage(String message);
+    public long getMissedHits();
 
-    public String getMessage();
+    public long getTotalHits();
 
-    public void sayHello();
+    public double  getPercentage();
 
 }
