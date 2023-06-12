@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 @ManagedBean(name = "percenter")
 @ApplicationScoped
-public class Percenter extends StandardMBean implements PercenterMBean {
+public class Percenter implements PercenterMBean {
 
     private final String name = "percenter";
     private final String nameOfObject = "BeanRegister:name=" + name;
@@ -23,8 +23,7 @@ public class Percenter extends StandardMBean implements PercenterMBean {
     private final AtomicLong missedHits = new AtomicLong(0);
     private String percentage;
 
-    public Percenter() throws NotCompliantMBeanException {
-        super(PercenterMBean.class);
+    public Percenter() {
     }
 
     @PostConstruct

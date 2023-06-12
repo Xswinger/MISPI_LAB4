@@ -9,22 +9,21 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.management.*;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Logger;
 
 @ManagedBean(name = "counter")
 @ApplicationScoped
-public class Counter extends StandardMBean implements CounterMBean {
+public class Counter extends NotificationBroadcasterSupport implements CounterMBean {
 
-    private static final Logger logger = Logger.getLogger(Counter.class.getName());
     private final String name = "counter";
     private final String nameOfObject = "BeanRegister:name=" + name;
     @ManagedProperty("#{beanRegistrator}")
     private BeanRegistrator beanRegistrator;
+    private final int MULTIPLIER = 5;
+    private long sequenceNumber = 0;
     private final AtomicLong totalHits = new AtomicLong(0);
     private final AtomicLong missedHits = new AtomicLong(0);
 
-    public Counter() throws NotCompliantMBeanException {
-        super(CounterMBean.class);
+    public Counter() {
     }
 
     @PostConstruct
@@ -42,8 +41,10 @@ public class Counter extends StandardMBean implements CounterMBean {
         if (!isSuccess) {
             missedHits.incrementAndGet();
         }
-        if (currentTotal % 5 == 0) {
-            logger.info("============ Кратно пяти ============");
+        if (currentTotal % MULTIPLIER == 0) {
+            Notification notification = new Notification("Кратность", this, sequenceNumber++, "Кратно " + MULTIPLIER);
+            notification.setUserData(currentTotal);
+            sendNotification(notification);
         }
     }
 
