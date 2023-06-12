@@ -4,21 +4,28 @@ import webdeving.dataBase.HitService;
 import webdeving.entity.Hit;
 import webdeving.verify.Verifier;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-@ManagedBean(name="appBean")
+@ManagedBean(name = "appBean")
 @ApplicationScoped
 public class AppBean implements Serializable {
     private final Verifier verifier = new Verifier();
-    private final HitService hitService = new HitService();
+    @ManagedProperty("#{hitService}")
+    private HitService hitService;
     private Hit hit = new Hit();
-    private List<Hit> hits = hitService.getAll();
+    private List<Hit> hits;
 
+    @PostConstruct
+    public void init() {
+        hits = hitService.getAll();
+    }
 
     public void add() {
         long start = System.nanoTime();
@@ -53,6 +60,14 @@ public class AppBean implements Serializable {
     public void clear() {
         hitService.clear();
         this.hits.clear();
+    }
+
+    public HitService getHitService() {
+        return hitService;
+    }
+
+    public void setHitService(HitService hitService) {
+        this.hitService = hitService;
     }
 
 }

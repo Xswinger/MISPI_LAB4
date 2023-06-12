@@ -1,42 +1,27 @@
 package webdeving.dataBase;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jmx.Observer;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import webdeving.entity.Hit;
+import webdeving.jmx.util.Notifier;
 
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-import javax.naming.InitialContext;
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import java.io.Serializable;
-import java.lang.management.ManagementFactory;
 import java.util.List;
 
+@ManagedBean(name = "hitService")
+@ApplicationScoped
 public class HitService implements Serializable, HitDao {
 
     private final SessionFactory manager = ConnectionManager.getSessionFactory();
-    //  MBean injection start
-    private Observer observer;
+
+    @ManagedProperty("#{notifier}")
+    private Notifier notifier;
 
     public HitService() {
-        try {
-
-            //  Get the platform MBeanServer
-            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-
-            //  Unique identification of MBeans
-            observer = new Observer();
-            ObjectName beanName = null;
-
-            //  Uniquely identify the MBeans and register them with the platform MBeanServer
-            beanName = new ObjectName("BeanRegister:name=observe");
-            mbs.registerMBean(observer, beanName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
-    //  MBean injection end
 
     @Override
     public void add(Hit hit) {
@@ -44,22 +29,18 @@ public class HitService implements Serializable, HitDao {
         currentSession.beginTransaction();
         currentSession.persist(hit);
         currentSession.getTransaction().commit();
-        //  MBean injection start
-        observer.increment(hit.isSuccess());
-        //  MBean injection end
+        notifier.notifyAdding(hit.isSuccess());
     }
 
     @Override
     public List<Hit> getAll() {
         Session currentSession = manager.getCurrentSession();
         currentSession.beginTransaction();
-        List<Hit> hits =  currentSession.createQuery( "FROM Hit ").list();
+        List<Hit> hits = currentSession.createQuery("FROM Hit ").list();
         currentSession.getTransaction().commit();
-        //  MBean injection start
         for (Hit hit : hits) {
-            observer.increment(hit.isSuccess());
+            notifier.notifyAdding(hit.isSuccess());
         }
-        //  MBean injection end
         return hits;
     }
 
@@ -69,8 +50,15 @@ public class HitService implements Serializable, HitDao {
         currentSession.beginTransaction();
         currentSession.clear();
         currentSession.getTransaction().commit();
-        //  MBean injection start
-        observer.clear();
-        //  MBean injection end
+        notifier.notifyClearing();
     }
+
+    public Notifier getNotifier() {
+        return notifier;
+    }
+
+    public void setNotifier(Notifier notifier) {
+        this.notifier = notifier;
+    }
+
 }
