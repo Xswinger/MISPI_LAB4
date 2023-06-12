@@ -37,20 +37,26 @@ public class Counter extends NotificationBroadcasterSupport implements CounterMB
     }
 
     public void increment(boolean isSuccess) {
-        long currentTotal = totalHits.incrementAndGet();
+        totalHits.incrementAndGet();
         if (!isSuccess) {
             missedHits.incrementAndGet();
         }
-        if (currentTotal % MULTIPLIER == 0) {
-            Notification notification = new Notification("Кратность", this, sequenceNumber++, "Кратно " + MULTIPLIER);
-            notification.setUserData(currentTotal);
-            sendNotification(notification);
-        }
+        checkAndNotify();
     }
 
     public void clear() {
         totalHits.set(0);
         missedHits.set(0);
+        checkAndNotify();
+    }
+
+    private void checkAndNotify() {
+        long currentTotal = totalHits.get();
+        if (currentTotal % MULTIPLIER == 0) {
+            Notification notification = new Notification("Кратность", this, sequenceNumber++, "Кратно " + MULTIPLIER);
+            notification.setUserData(currentTotal);
+            sendNotification(notification);
+        }
     }
 
     @Override
